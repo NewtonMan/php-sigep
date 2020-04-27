@@ -1,4 +1,5 @@
 <?php
+require_once '../Lib/functions.php';
 /**
  * This is core configuration file.
  *
@@ -18,8 +19,8 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-//setLocale(LC_ALL, 'deu');
-//Configure::write('Config.language', 'deu');
+setLocale(LC_ALL, 'pt_BR');
+Configure::write('Config.language', 'ptb');
 
 /**
  * CakePHP Debug Level:
@@ -227,18 +228,18 @@
  * the cake shell command: cake schema create Sessions
  */
 	Configure::write('Session', array(
-		'defaults' => 'php'
+		'defaults' => 'cache',
 	));
 
 /**
  * A random string used in security hashing methods.
  */
-	Configure::write('Security.salt', 'DYhG93b0qyJfIxfs2guVoUubWwvniR2G0FgaC9mi');
+	Configure::write('Security.salt', 'SDBG3845Ylkjbdvroi8y54werklgb4oi5oyu2go4ybfob');
 
 /**
  * A random numeric string (digits only) used to encrypt/decrypt strings.
  */
-	Configure::write('Security.cipherSeed', '76859309657453542496749683645');
+	Configure::write('Security.cipherSeed', '45623058762435234654654686578');
 
 /**
  * Apply timestamps with the last modified time to static assets (js, css, images).
@@ -286,7 +287,7 @@
  * then the value of `Config.timezone` will be used. This feature allows you to set users' timezone just
  * once instead of passing it each time in function calls.
  */
-	//Configure::write('Config.timezone', 'Europe/Paris');
+	Configure::write('Config.timezone', 'America/Sao_Paulo');
 
 /**
  * Cache Engine Configuration
@@ -380,7 +381,7 @@ Cache::config('_cake_core_', array(
 	'engine' => $engine,
 	'prefix' => $prefix . 'cake_core_',
 	'path' => CACHE . 'persistent' . DS,
-	'serialize' => ($engine === 'File'),
+	//'serialize' => ($engine === 'File'),
 	'duration' => $duration
 ));
 
@@ -392,6 +393,6 @@ Cache::config('_cake_model_', array(
 	'engine' => $engine,
 	'prefix' => $prefix . 'cake_model_',
 	'path' => CACHE . 'models' . DS,
-	'serialize' => ($engine === 'File'),
+	//'serialize' => ($engine === 'File'),
 	'duration' => $duration
 ));

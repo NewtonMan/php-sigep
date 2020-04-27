@@ -1,0 +1,9 @@
+{
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "stavarengo/php-sigep": "dev-master",
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi-fpdf": "^2.1"
+    }
+}

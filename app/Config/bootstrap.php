@@ -66,6 +66,11 @@ Cache::config('default', array('engine' => 'File'));
  * CakePlugin::loadAll(); // Loads all plugins at once
  * CakePlugin::load('DebugKit'); // Loads a single plugin named DebugKit
  */
+CakePlugin::loadAll([
+    'UserManagement' => [
+        'routes' => true,
+    ],
+]);
 
 /**
  * To prefer app translation over plugin translation, you can set

@@ -1,34 +1,133 @@
 <?php
-/**
- * Application level Controller
- *
- * This file is application-wide controller file. You can put all
- * application-wide controller-related methods here.
- *
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @package       app.Controller
- * @since         CakePHP(tm) v 0.2.9
- * @license       https://opensource.org/licenses/mit-license.php MIT License
- */
-
 App::uses('Controller', 'Controller');
-
-/**
- * Application Controller
- *
- * Add your application-wide methods in the class below, your controllers
- * will inherit them.
- *
- * @package		app.Controller
- * @link		https://book.cakephp.org/2.0/en/controllers.html#the-app-controller
- */
 class AppController extends Controller {
+    
+    public $layout = 'AdminLTE.default';
+    
+    public $components = array(
+        'Session',
+        'Auth' => array(
+            'loginAction' => '/login',
+            'loginRedirect' => '/',
+            'authError' => 'Did you really think you are allowed to see that?',
+            'authenticate' => array(
+                'Basic' => array(
+                    'userModel' => 'UserManagement.User',
+                    'fields' => array(
+                        'username' => 'email',
+                        'password' => 'senha'
+                    ),
+                ),
+                'JwtAuth.JwtToken' => array(
+                    'fields' => array(
+                        'username' => 'CPF',
+                        'password' => 'senha',
+                        //'token' => 'token',
+                    ),
+                    'parameter' => '_token',
+                    'header' => 'Authorization',
+                    'userModel' => 'UserManagement.User',
+                ),
+                'Form' => array(
+                    'userModel' => 'UserManagement.User',
+                    'fields' => array(
+                        'username' => 'email',
+                        'password' => 'senha'
+                    ),
+                ),
+            ),
+        ),
+    );
+
+    public $helpers = array(
+        'Html' => array(
+            'className' => 'Bootstrap3.BootstrapHtml'
+        ),
+        'Form' => array(
+            'className' => 'Bootstrap3.BootstrapForm'
+        ),
+        'Modal' => array(
+            'className' => 'Bootstrap3.BootstrapModal'
+        ),
+        'Paginator' => array(
+            'className' => 'Bootstrap3.BootstrapPaginator'
+        ),
+    );
+
+    public $paginate = array(
+        'limit' => 10,
+        'paramType' => 'querystring',
+    );
+
+    public $crumbs = [];
+    
+    public function beforeRender() {
+        parent::beforeRender();
+        $this->set('crumbs', $this->crumbs);
+    }
+
+    public function setRefer(){
+        $this->Session->write('refer', $_SERVER['REQUEST_URI']);
+    }
+
+    public function getRefer(){
+        return $this->redirect($this->Session->read('refer'));
+    }
+
+    public function crudModelSearch($model){
+        $c = [];
+        if (isset($_GET['crudSearch'])){
+            $searchString = "%" . str_replace([' ', '*'], ['%', '%'], $_GET['crudSearch']) . "%";
+            $searchInt = onlyNumbers($_GET['crudSearch']);
+            foreach ($this->$model->schema() as $campo => $param){
+                if ($param['type']=='string'){
+                    $c["{$model}.{$campo} LIKE ?"] = $searchString;
+                } elseif ($param['type']=='int' || $param['type']=='integer' || $param['type']=='biginteger'){
+                    $c["{$model}.{$campo}"] = $searchInt;
+                }
+            }
+            foreach ($this->$model->belongsTo as $modelb => $data){
+                foreach ($this->$model->$modelb->schema() as $campo => $param){
+                    if ($param['type']=='string'){
+                        $c["{$modelb}.{$campo} LIKE ?"] = $searchString;
+                    } elseif ($param['type']=='int' || $param['type']=='integer' || $param['type']=='biginteger'){
+                        $c["{$modelb}.{$campo}"] = $searchInt;
+                    }
+                }
+            }
+            foreach ($this->$model->hasOne as $modelb => $data){
+                foreach ($this->$model->$modelb->schema() as $campo => $param){
+                    if ($param['type']=='string'){
+                        $c["{$modelb}.{$campo} LIKE ?"] = $searchString;
+                    } elseif ($param['type']=='int' || $param['type']=='integer' || $param['type']=='biginteger'){
+                        $c["{$modelb}.{$campo}"] = $searchInt;
+                    }
+                }
+            }
+            $total = count($c);
+            if ($total > 0){
+                $c = ['OR' => $c];
+            }
+        }
+        return $c;
+    }
+
+    public function crudFormAction($model, $id=null, $refer=true){
+        if ($this->request->is('post') || $this->request->is('put')){
+            if (!empty($id)){
+                $this->$model->id = $id;
+            } else {
+                $this->$model->create();
+            }
+            if ($this->$model->save($this->request->data)){
+                $this->Session->setFlash('Dados salvos!', 'AdminLTE.mensagens/sucesso');
+                if ($refer) $this->getRefer();
+            } else {
+                $this->Session->setFlash('ERRO: Verifique o Formulário.', 'AdminLTE.mensagens/alerta');
+            }
+        } elseif (!empty($id)) {
+            $this->request->data = $this->$model->read(null, $id);
+        }
+    }
+    
 }

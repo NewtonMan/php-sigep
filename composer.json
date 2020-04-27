@@ -1,46 +1,55 @@
 {
-	"name": "cakephp/cakephp",
-	"description": "The CakePHP framework",
-	"type": "library",
-	"keywords": ["framework"],
-	"homepage": "https://cakephp.org",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "CakePHP Community",
-			"homepage": "https://github.com/cakephp/cakephp/graphs/contributors"
-		}
-	],
-	"support": {
-		"issues": "https://github.com/cakephp/cakephp/issues",
-		"forum": "https://stackoverflow.com/tags/cakephp",
-		"irc": "irc://irc.freenode.org/cakephp",
-		"source": "https://github.com/cakephp/cakephp"
-	},
-	"require": {
-		"php": ">=5.3.0"
-	},
-	"suggest": {
-		"ext-openssl": "You need to install ext-openssl or ext-mcrypt to use AES-256 encryption",
-		"ext-mcrypt": "You need to install ext-openssl or ext-mcrypt to use AES-256 encryption"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "^3.7",
-		"cakephp/cakephp-codesniffer": "^1.0.0"
-	},
-	"config": {
-		"vendor-dir": "vendors/",
-		"process-timeout": 0
-	},
-	"bin": [
-		"lib/Cake/Console/cake"
-	],
-	"scripts": {
-		"check": [
-			"@cs-check",
-			"@test"
-		],
-		"cs-check": "./vendors/bin/phpcs -p --extensions=php --standard=CakePHP ./lib/Cake",
-		"test": "./lib/Cake/Console/cake test core AllTests --stderr --verbose"
-	}
+    "name": "mkt-trade/apifrete",
+    "description": "APIs UNITYLOG",
+    "require": {
+        "php": ">=7.1.0",
+        "cakephp/cakephp": "~2.10",
+        "t73biz/cakephp2-jwt-auth": "dev-master",
+        "google/cloud-storage": "*",
+        "fortawesome/font-awesome": "*",
+        "holt59/cakephp-bootstrap3-helpers": "dev-master",
+        "igorescobar/jquery-mask-plugin": "dev-master",
+        "bloody-hell/xdan-datetimepicker": "dev-master",
+        "almasaeed2010/adminlte": "^2.",
+        "firebase/php-jwt": "*",
+        "aferrandini/phpqrcode": "1.0.1",
+        "components/jquery": "dev-master",
+        "twbs/bootstrap": "3.*",
+        "stavarengo/php-sigep": "dev-master",
+        "stavarengo/php-sigep-fpdf": "dev-master",
+        "phpoffice/phpspreadsheet": "^1.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^3.7",
+        "cakephp/cakephp-codesniffer": "^1.0.0"
+    },
+    "config": {
+        "vendor-dir": "app/Vendor/"
+    },
+    "bin": [
+        "app/Console/cake"
+    ],
+    "extra": {
+        "installer-paths": {
+            "app/Plugin/{$name}": ["t73biz/cakephp2-jwt-auth", "holt59/cakephp-bootstrap3-helpers"]
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "chmod -R 755 app/webroot/files",
+            "cp -r app/Vendor/almasaeed2010/adminlte app/webroot/vendor/",
+            "cp -r app/Vendor/fortawesome/font-awesome app/webroot/vendor/",
+            "cp -r app/Vendor/igorescobar/jquery-mask-plugin app/webroot/vendor/",
+            "cp -r app/Vendor/twbs/bootstrap app/webroot/vendor/",
+            "cp -r app/Vendor/components/jquery app/webroot/vendor/"
+        ],
+        "post-update-cmd": [
+            "chmod -R 755 app/webroot/files",
+            "cp -r app/Vendor/almasaeed2010/adminlte app/webroot/vendor/",
+            "cp -r app/Vendor/fortawesome/font-awesome app/webroot/vendor/",
+            "cp -r app/Vendor/igorescobar/jquery-mask-plugin app/webroot/vendor/",
+            "cp -r app/Vendor/twbs/bootstrap app/webroot/vendor/",
+            "cp -r app/Vendor/components/jquery app/webroot/vendor/"
+        ]
+    }
 }

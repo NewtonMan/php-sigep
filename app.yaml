@@ -1,0 +1,10 @@
+runtime: php
+env: flex
+entrypoint: serve app/webroot/index.php
+service: default
+
+runtime_config:
+    document_root: app/webroot
+
+beta_settings:
+    cloud_sql_instances: unitylog:southamerica-east1:unitylog-db-ptk,unitylog:southamerica-east1:unitylog-db-ptk=tcp:3306
